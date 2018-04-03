@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 27
@@ -32,6 +34,9 @@ android {
             buildConfigField("int","RequestMode", "2")
         }
     }
+    androidExtensions {
+        experimental = true
+    }
 }
 
 dependencies {
@@ -39,5 +44,7 @@ dependencies {
     implementation "com.android.support:support-compat:$support"
     implementation "com.android.support:cardview-v7:$support"
     implementation "com.android.support.constraint:constraint-layout:$constraints"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
     compile project(':ucrop')
 }

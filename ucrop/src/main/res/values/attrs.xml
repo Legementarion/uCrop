@@ -1,6 +1,6 @@
 <resources>
 
-    <declare-styleable name="ucrop_UCropView">
+    <declare-styleable name="UCropView">
 
         <!--Crop image view-->
         <attr name="ucrop_aspect_ratio_x" format="float"/>
@@ -23,7 +23,7 @@
 
     </declare-styleable>
 
-    <declare-styleable name="ucrop_AspectRatioTextView">
+    <declare-styleable name="AspectRatioTextView">
 
         <attr name="ucrop_artv_ratio_title" format="string"/>
 

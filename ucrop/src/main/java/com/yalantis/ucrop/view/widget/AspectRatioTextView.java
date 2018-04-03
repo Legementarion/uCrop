@@ -45,14 +45,14 @@ public class AspectRatioTextView extends TextView {
 
     public AspectRatioTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ucrop_AspectRatioTextView);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AspectRatioTextView);
         init(a);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public AspectRatioTextView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ucrop_AspectRatioTextView);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AspectRatioTextView);
         init(a);
     }
 
@@ -102,9 +102,9 @@ public class AspectRatioTextView extends TextView {
     private void init(@NonNull TypedArray a) {
         setGravity(Gravity.CENTER_HORIZONTAL);
 
-        mAspectRatioTitle = a.getString(R.styleable.ucrop_AspectRatioTextView_ucrop_artv_ratio_title);
-        mAspectRatioX = a.getFloat(R.styleable.ucrop_AspectRatioTextView_ucrop_artv_ratio_x, CropImageView.SOURCE_IMAGE_ASPECT_RATIO);
-        mAspectRatioY = a.getFloat(R.styleable.ucrop_AspectRatioTextView_ucrop_artv_ratio_y, CropImageView.SOURCE_IMAGE_ASPECT_RATIO);
+        mAspectRatioTitle = a.getString(R.styleable.AspectRatioTextView_ucrop_artv_ratio_title);
+        mAspectRatioX = a.getFloat(R.styleable.AspectRatioTextView_ucrop_artv_ratio_x, CropImageView.SOURCE_IMAGE_ASPECT_RATIO);
+        mAspectRatioY = a.getFloat(R.styleable.AspectRatioTextView_ucrop_artv_ratio_y, CropImageView.SOURCE_IMAGE_ASPECT_RATIO);
 
         if (mAspectRatioX == CropImageView.SOURCE_IMAGE_ASPECT_RATIO || mAspectRatioY == CropImageView.SOURCE_IMAGE_ASPECT_RATIO) {
             mAspectRatio = CropImageView.SOURCE_IMAGE_ASPECT_RATIO;

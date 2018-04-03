@@ -18,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.yalantis.ucrop.model.AspectRatio;
+import com.yalantis.ucrop.view.UCropView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -328,9 +329,9 @@ public class UCrop {
         /**
          * Choose what set of gestures will be enabled on each tab - if any.
          */
-        public void setAllowedGestures(@UCropActivity.GestureTypes int tabScale,
-                                       @UCropActivity.GestureTypes int tabRotate,
-                                       @UCropActivity.GestureTypes int tabAspectRatio) {
+        public void setAllowedGestures(@UCropView.GestureTypes int tabScale,
+                                       @UCropView.GestureTypes int tabRotate,
+                                       @UCropView.GestureTypes int tabAspectRatio) {
             mOptionBundle.putIntArray(EXTRA_ALLOWED_GESTURES, new int[]{tabScale, tabRotate, tabAspectRatio});
         }
 
@@ -495,10 +496,10 @@ public class UCrop {
         }
 
         /**
-         * @param enabled - set to true to let user resize crop bounds (disabled by default)
+         * @param mode - let user resize crop bounds (disabled by default)
          */
-        public void setFreeStyleCropEnabled(boolean enabled) {
-            mOptionBundle.putBoolean(EXTRA_FREE_STYLE_CROP, enabled);
+        public void setFreeStyleCropEnabled(int mode) {
+            mOptionBundle.putInt(EXTRA_FREE_STYLE_CROP, mode);
         }
 
         /**

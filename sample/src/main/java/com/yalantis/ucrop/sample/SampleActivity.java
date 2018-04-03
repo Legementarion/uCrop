@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -35,13 +36,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yalantis.ucrop.UCrop;
-import com.yalantis.ucrop.UCropActivity;
 import com.yalantis.ucrop.UCropFragment;
 import com.yalantis.ucrop.UCropFragmentCallback;
+import com.yalantis.ucrop.model.UCropResult;
+import com.yalantis.ucrop.view.UCropView;
 
 import java.io.File;
 import java.util.Locale;
 import java.util.Random;
+
+import static com.yalantis.ucrop.view.OverlayView.FREESTYLE_CROP_MODE_DISABLE;
+import static com.yalantis.ucrop.view.OverlayView.FREESTYLE_CROP_MODE_ENABLE;
+import static com.yalantis.ucrop.view.UCropView.DEFAULT_COMPRESS_QUALITY;
 
 /**
  * Created by Oleksii Shliama (https://github.com/shliama).
@@ -63,6 +69,7 @@ public class SampleActivity extends BaseActivity implements UCropFragmentCallbac
     private CheckBox mCheckBoxHideBottomControls;
     private CheckBox mCheckBoxFreeStyleCrop;
     private Toolbar toolbar;
+    private UCropView uCropView;
     private ScrollView settingsView;
     private int requestMode = BuildConfig.RequestMode;
 
@@ -129,35 +136,34 @@ public class SampleActivity extends BaseActivity implements UCropFragmentCallbac
                 pickFromGallery();
             }
         });
-        findViewById(R.id.button_random_image).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Random random = new Random();
-                int minSizePixels = 800;
-                int maxSizePixels = 2400;
-                Uri uri = Uri.parse(String.format(Locale.getDefault(), "https://unsplash.it/%d/%d/?random",
-                        minSizePixels + random.nextInt(maxSizePixels - minSizePixels),
-                        minSizePixels + random.nextInt(maxSizePixels - minSizePixels)));
-
-                startCrop(uri);
-            }
-        });
-        settingsView = findViewById(R.id.settings);
+//        findViewById(R.id.button_random_image).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Random random = new Random();
+//                int minSizePixels = 800;
+//                int maxSizePixels = 2400;
+//                Uri uri = Uri.parse(String.format(Locale.getDefault(), "https://unsplash.it/%d/%d/?random",
+//                        minSizePixels + random.nextInt(maxSizePixels - minSizePixels),
+//                        minSizePixels + random.nextInt(maxSizePixels - minSizePixels)));
+//
+//                startCrop(uri);
+//            }
+//        });
         mRadioGroupAspectRatio = findViewById(R.id.radio_group_aspect_ratio);
         mRadioGroupCompressionSettings = findViewById(R.id.radio_group_compression_settings);
         mCheckBoxMaxSize = findViewById(R.id.checkbox_max_size);
-        mEditTextRatioX = findViewById(R.id.edit_text_ratio_x);
-        mEditTextRatioY = findViewById(R.id.edit_text_ratio_y);
+//        mEditTextRatioX = findViewById(R.id.edit_text_ratio_x);
+//        mEditTextRatioY = findViewById(R.id.edit_text_ratio_y);
         mEditTextMaxWidth = findViewById(R.id.edit_text_max_width);
         mEditTextMaxHeight = findViewById(R.id.edit_text_max_height);
         mSeekBarQuality = findViewById(R.id.seekbar_quality);
         mTextViewQuality = findViewById(R.id.text_view_quality);
-        mCheckBoxHideBottomControls = findViewById(R.id.checkbox_hide_bottom_controls);
+//        mCheckBoxHideBottomControls = findViewById(R.id.checkbox_hide_bottom_controls);
         mCheckBoxFreeStyleCrop = findViewById(R.id.checkbox_freestyle_crop);
 
         mRadioGroupAspectRatio.check(R.id.radio_dynamic);
-        mEditTextRatioX.addTextChangedListener(mAspectRatioTextWatcher);
-        mEditTextRatioY.addTextChangedListener(mAspectRatioTextWatcher);
+//        mEditTextRatioX.addTextChangedListener(mAspectRatioTextWatcher);
+//        mEditTextRatioY.addTextChangedListener(mAspectRatioTextWatcher);
         mRadioGroupCompressionSettings.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -165,7 +171,7 @@ public class SampleActivity extends BaseActivity implements UCropFragmentCallbac
             }
         });
         mRadioGroupCompressionSettings.check(R.id.radio_jpeg);
-        mSeekBarQuality.setProgress(UCropActivity.DEFAULT_COMPRESS_QUALITY);
+        mSeekBarQuality.setProgress(DEFAULT_COMPRESS_QUALITY);
         mTextViewQuality.setText(String.format(getString(R.string.format_quality_d), mSeekBarQuality.getProgress()));
         mSeekBarQuality.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -263,12 +269,34 @@ public class SampleActivity extends BaseActivity implements UCropFragmentCallbac
         uCrop = basisConfig(uCrop);
         uCrop = advancedConfig(uCrop);
 
-        if (requestMode == REQUEST_SELECT_PICTURE_FOR_FRAGMENT) {       //if build variant = fragment
-            setupFragment(uCrop);
-        } else {                                                        // else start uCrop Activity
-            uCrop.start(SampleActivity.this);
-        }
+        uCropView.processOptions(uCrop.getIntent(getBaseContext()).getExtras());
+        setImageData(uCrop.getIntent(getBaseContext()));
+        uCropView.animate().alpha(1).setDuration(300).setInterpolator(new AccelerateInterpolator());
 
+//        if (requestMode == REQUEST_SELECT_PICTURE_FOR_FRAGMENT) {       //if build variant = fragment
+//            setupFragment(uCrop);
+//        } else {                                                        // else start uCrop Activity
+//            uCrop.start(SampleActivity.this);
+//        }
+
+    }
+    /**
+     * This method extracts all data from the incoming intent and setups views properly.
+     */
+    private void setImageData(@NonNull Intent intent) {
+        if (intent.getExtras() != null) {
+            Uri inputUri = intent.getParcelableExtra(UCrop.EXTRA_INPUT_URI);
+            Uri outputUri = intent.getParcelableExtra(UCrop.EXTRA_OUTPUT_URI);
+
+            uCropView.processOptions(intent.getExtras());
+
+            if (inputUri != null && outputUri != null) {
+                try {
+                    uCropView.getCropImageView().setImageUri(inputUri, outputUri);
+                } catch (Exception e) {
+                }
+            }
+        }
     }
 
     /**
@@ -289,15 +317,15 @@ public class SampleActivity extends BaseActivity implements UCropFragmentCallbac
                 // do nothing
                 break;
             default:
-                try {
-                    float ratioX = Float.valueOf(mEditTextRatioX.getText().toString().trim());
-                    float ratioY = Float.valueOf(mEditTextRatioY.getText().toString().trim());
-                    if (ratioX > 0 && ratioY > 0) {
-                        uCrop = uCrop.withAspectRatio(ratioX, ratioY);
-                    }
-                } catch (NumberFormatException e) {
-                    Log.i(TAG, String.format("Number please: %s", e.getMessage()));
-                }
+//                try {
+//                    float ratioX = Float.valueOf(mEditTextRatioX.getText().toString().trim());
+//                    float ratioY = Float.valueOf(mEditTextRatioY.getText().toString().trim());
+//                    if (ratioX > 0 && ratioY > 0) {
+//                        uCrop = uCrop.withAspectRatio(ratioX, ratioY);
+//                    }
+//                } catch (NumberFormatException e) {
+//                    Log.i(TAG, String.format("Number please: %s", e.getMessage()));
+//                }
                 break;
         }
 
@@ -336,8 +364,8 @@ public class SampleActivity extends BaseActivity implements UCropFragmentCallbac
         }
         options.setCompressionQuality(mSeekBarQuality.getProgress());
 
-        options.setHideBottomControls(mCheckBoxHideBottomControls.isChecked());
-        options.setFreeStyleCropEnabled(mCheckBoxFreeStyleCrop.isChecked());
+//        options.setHideBottomControls(mCheckBoxHideBottomControls.isChecked());
+        options.setFreeStyleCropEnabled(mCheckBoxFreeStyleCrop.isChecked() ? FREESTYLE_CROP_MODE_ENABLE : FREESTYLE_CROP_MODE_DISABLE);
 
         /*
         If you want to configure how gestures work for all UCropActivity tabs
@@ -416,13 +444,13 @@ public class SampleActivity extends BaseActivity implements UCropFragmentCallbac
     }
 
     @Override
-    public void onCropFinish(UCropFragment.UCropResult result) {
-        switch (result.mResultCode) {
+    public void onCropFinish(UCropResult result) {
+        switch (result.getResultCode()) {
             case RESULT_OK:
-                handleCropResult(result.mResultData);
+                handleCropResult(result.getResultData());
                 break;
             case UCrop.RESULT_ERROR:
-                handleCropError(result.mResultData);
+                handleCropError(result.getResultData());
                 break;
         }
         removeFragmentFromScreen();

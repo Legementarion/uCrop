@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <style name="TitleTextView">
+        <item name="android:textColor">@color/colorText</item>
+        <item name="android:textSize">@dimen/font_title_text</item>
+    </style>
+
+    <style name="CommonTextView">
+        <item name="android:textColor">@color/colorText</item>
+        <item name="android:textSize">@dimen/font_text</item>
+    </style>
+
+</resources>

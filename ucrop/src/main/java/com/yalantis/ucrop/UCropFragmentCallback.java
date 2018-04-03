@@ -1,5 +1,7 @@
 package com.yalantis.ucrop;
 
+import com.yalantis.ucrop.model.UCropResult;
+
 public interface UCropFragmentCallback {
 
     /**
@@ -12,6 +14,6 @@ public interface UCropFragmentCallback {
      * Return cropping result or error
      * @param result
      */
-    void onCropFinish(UCropFragment.UCropResult result);
+    void onCropFinish(UCropResult result);
 
 }

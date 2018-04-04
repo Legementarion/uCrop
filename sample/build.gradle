@@ -46,5 +46,5 @@ dependencies {
     implementation "com.android.support.constraint:constraint-layout:$constraints"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    compile project(':ucrop')
+    implementation project(':ucrop')
 }

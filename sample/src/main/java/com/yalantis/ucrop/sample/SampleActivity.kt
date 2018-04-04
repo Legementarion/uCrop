@@ -132,6 +132,8 @@ class SampleActivity : BaseActivity() {
     private fun startCrop(uri: Uri) {
         val destinationFileName = SAMPLE_CROPPED_IMAGE_NAME
         basisConfig()
+        uCropView.visibility = View.VISIBLE
+        settings.visibility = View.GONE
         uCropView.setImage(uri, Uri.fromFile(File(cacheDir, destinationFileName)))
         uCropView.animate().alpha(1f).setDuration(300).interpolator = AccelerateInterpolator()
     }
@@ -144,14 +146,20 @@ class SampleActivity : BaseActivity() {
      */
     private fun basisConfig() {
 
-        when (radioGroupAspectRatio.checkedRadioButtonId) {
-            R.id.radioOrigin -> uCropView.useSourceImageAspectRatio()
-            R.id.radioSquare -> uCropView.withAspectRatio(1f, 1f)
-            R.id.radioDynamic -> {
+        radioArray.forEach { if (it.isChecked) {
+            when (it.id) {
+                R.id.radioOrigin -> uCropView.useSourceImageAspectRatio()
+                R.id.radioSquare -> uCropView.withAspectRatio(1f, 1f)
+                R.id.radioDynamic -> {
+                }
+                R.id.radio16x9 -> {
+                    uCropView.withAspectRatio(16f, 9f)
+                }
+                else -> {
+                }
             }
-            else -> {
-            }
-        }
+        } }
+
         if (checkboxMaxSize.isChecked) {
             try {
                 val maxWidth = Integer.valueOf(editTextMaxWidth.text.toString().trim({ it <= ' ' }))!!

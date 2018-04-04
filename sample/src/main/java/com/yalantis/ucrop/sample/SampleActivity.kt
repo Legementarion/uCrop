@@ -140,9 +140,6 @@ class SampleActivity : BaseActivity() {
 
     /**
      * In most cases you need only to set crop aspect ration and max size for resulting image.
-     *
-     * @param uCrop - ucrop builder instance
-     * @return - ucrop builder instance
      */
     private fun basisConfig() {
 

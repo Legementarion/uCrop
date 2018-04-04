@@ -4,7 +4,9 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.support.annotation.ColorInt
 import android.support.annotation.IntDef
+import android.support.annotation.IntRange
 import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.util.AttributeSet
@@ -15,6 +17,7 @@ import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import com.yalantis.ucrop.R
 import com.yalantis.ucrop.UCrop
+import com.yalantis.ucrop.UCrop.MIN_SIZE
 import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.callback.CropBoundsChangeListener
 import com.yalantis.ucrop.callback.OverlayViewChangeListener
@@ -45,6 +48,7 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     private var mAllowedGestures = intArrayOf(SCALE, ROTATE, ALL)
     private var compressFormat = DEFAULT_COMPRESS_FORMAT
     private var compressQuality = DEFAULT_COMPRESS_QUALITY
+    private val allowedGestures = mutableListOf<Int>()
 
     private var aspectRatioX: Float = 0f
     private var aspectRatioY: Float = 0f
@@ -93,6 +97,7 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
      */
     fun resetCropImageView() {
         removeView(gestureCropImageView)
+        gestureCropImageView.invalidate()
 //        gestureCropImageView = GestureCropImageView(context)
         setListenersToViews()
         gestureCropImageView?.setCropRect(overlayView?.cropViewRect)
@@ -151,9 +156,6 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         val aspectRatioList = options.getParcelableArrayList<AspectRatio>(UCrop.Options.EXTRA_ASPECT_RATIO_OPTIONS)
 
         if (aspectRatioX > 0 && aspectRatioY > 0) {
-            //            if (mWrapperStateAspectRatio != null) {
-            //                mWrapperStateAspectRatio.setVisibility(View.GONE);
-            //            }
             gestureCropImageView?.targetAspectRatio = aspectRatioX / aspectRatioY
         } else if (aspectRatioList != null && aspectRationSelectedByDefault < aspectRatioList.size) {
             gestureCropImageView?.targetAspectRatio = aspectRatioList[aspectRationSelectedByDefault].aspectRatioX / aspectRatioList[aspectRationSelectedByDefault].aspectRatioY
@@ -173,6 +175,146 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
     fun cropAndSaveImage(callback: BitmapCropCallback) {
         gestureCropImageView?.cropAndSaveImage(compressFormat, compressQuality, callback)
+    }
+
+    fun setImage(inputUri: Uri, outputUri: Uri) {
+        val aspectRationSelectedByDefault = 0
+        val aspectRatioList = mutableListOf<AspectRatio>()
+
+        if (aspectRatioX > 0 && aspectRatioY > 0) {
+            gestureCropImageView?.targetAspectRatio = aspectRatioX / aspectRatioY
+        } else if (!aspectRatioList.isEmpty() && aspectRationSelectedByDefault < aspectRatioList.size) {
+            gestureCropImageView?.targetAspectRatio = aspectRatioList[aspectRationSelectedByDefault].aspectRatioX / aspectRatioList[aspectRationSelectedByDefault].aspectRatioY
+        } else {
+            gestureCropImageView?.targetAspectRatio = CropImageView.SOURCE_IMAGE_ASPECT_RATIO
+        }
+
+        if (maxSizeX > 0 && maxSizeY > 0) {
+            gestureCropImageView?.setMaxResultImageSizeX(maxSizeX)
+            gestureCropImageView?.setMaxResultImageSizeY(maxSizeY)
+        }
+
+
+        gestureCropImageView?.setImageUri(inputUri, outputUri)
+        blockingView?.isClickable = false
+    }
+
+    // Gestures options
+
+    fun allowedGestures(bitmapSize: Int) {
+        if (allowedGestures != null && allowedGestures.size == TABS_COUNT)
+        {
+            mAllowedGestures = allowedGestures
+        }
+        gestureCropImageView?.maxBitmapSize = bitmapSize
+    }
+
+    // Crop image view options
+
+    /**
+     * Setter for max size for both width and height of bitmap that will be decoded from an input Uri and used in the view.
+     *
+     * @param maxBitmapSize - size in pixels
+     */
+    fun setMaxBitmapSize(@IntRange(from = MIN_SIZE.toLong()) maxBitmapSize: Int) {
+        gestureCropImageView?.maxBitmapSize = maxBitmapSize
+    }
+
+    /**
+     * This method sets multiplier that is used to calculate max image scale from min image scale.
+     *
+     * @param maxScaleMultiplier - (minScale * maxScaleMultiplier) = maxScale
+     */
+    fun setMaxScaleMultiplier(multiplier: Float) {
+        gestureCropImageView?.setMaxScaleMultiplier(multiplier)
+    }
+
+    /**
+     * This method sets animation duration for image to wrap the crop bounds
+     *
+     * @param durationMillis - duration in milliseconds
+     */
+    fun setImageToWrapCropBoundsAnimDuration(durationMillis: Long) {
+        gestureCropImageView?.setImageToWrapCropBoundsAnimDuration(durationMillis)
+    }
+
+    // Overlay view options
+
+    /**
+     * @param mode - let user resize crop bounds (disabled by default)
+     */
+    fun setFreeStyleCropEnabled(mode: Int) {
+        overlayView.freestyleCropMode = mode
+    }
+
+    /**
+     * @param color - desired color of dimmed area around the crop bounds
+     */
+    fun setDimmedColor(@ColorInt color: Int) {
+        overlayView.setDimmedColor(color)
+    }
+
+    /**
+     * @param isCircle - set it to true if you want dimmed layer to have an circle inside
+     */
+    fun setCircleDimmedLayer(value: Boolean) {
+        overlayView.setCircleDimmedLayer(value)
+    }
+
+    /**
+     * @param show - set to true if you want to see a crop frame rectangle on top of an image
+     */
+    fun setShowCropFrame(show: Boolean) {
+        overlayView?.setShowCropFrame(show)
+    }
+
+    /**
+     * @param color - desired color of crop frame
+     */
+    fun setCropFrameColor(@ColorInt color: Int) {
+        overlayView?.setCropFrameColor(color)
+    }
+
+    /**
+     * @param width - desired width of crop frame line in pixels
+     */
+    fun setCropFrameStrokeWidth(width: Int) {
+        overlayView?.setCropFrameStrokeWidth(width)
+    }
+
+    /**
+     * @param show - set to true if you want to see a crop grid/guidelines on top of an image
+     */
+    fun setShowCropGrid(show: Boolean) {
+        overlayView?.setShowCropGrid(show)
+    }
+
+    /**
+     * @param count - crop grid rows count.
+     */
+    fun setCropGridRowCount(count: Int) {
+        overlayView?.setCropGridRowCount(count)
+    }
+
+    /**
+     * @param count - crop grid columns count.
+     */
+    fun setCropGridColumnCount(count: Int) {
+        overlayView?.setCropGridColumnCount(count)
+    }
+
+    /**
+     * @param color - desired color of crop grid/guidelines
+     */
+    fun setCropGridColor(@ColorInt color: Int) {
+        overlayView?.setCropGridColor(color)
+    }
+
+    /**
+     * @param width - desired width of crop grid lines in pixels
+     */
+    fun setCropGridStrokeWidth(width: Int) {
+        overlayView?.setCropGridStrokeWidth(width)
     }
 
     fun setAllowedGestures(tab: Int) {
@@ -196,49 +338,57 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         return gestureCropImageView
     }
 
+    /**
+     * Set an aspect ratio for crop bounds that is evaluated from source image width and height.
+     * User won't see the menu with other ratios options.
+     */
     fun useSourceImageAspectRatio() {
         aspectRatioX = 0f
         aspectRatioY = 0f
     }
 
-    fun withAspectRatio(ratioX: Float, ratioY: Float) {
-        aspectRatioX = ratioX
-        aspectRatioY = ratioY
+    /**
+     * Set an aspect ratio for crop bounds.
+     * User won't see the menu with other ratios options.
+     *
+     * @param x aspect ratio X
+     * @param y aspect ratio Y
+     */
+    fun withAspectRatio(x: Float, y: Float) {
+        aspectRatioX = x
+        aspectRatioY = y
     }
 
+    /**
+     * Set maximum size for result cropped image.
+     *
+     * @param width  max cropped image width
+     * @param height max cropped image height
+     */
     fun withMaxResultSize(width: Int, height: Int) {
         maxSizeX = width
         maxSizeY = height
     }
 
+    /**
+     * Set one of {@link android.graphics.Bitmap.CompressFormat} that will be used to save resulting Bitmap.
+     */
     fun setCompressionFormat(format: Bitmap.CompressFormat) {
         compressFormat = format
     }
 
+    /**
+     * Set compression quality [0-100] that will be used to save resulting Bitmap.
+     */
     fun setCompressionQuality(compressQuality: Int) {
         this.compressQuality = compressQuality
     }
 
-    fun setImage(inputUri: Uri, outputUri: Uri) {
-        val aspectRationSelectedByDefault = 0
-        val aspectRatioList = mutableListOf<AspectRatio>()
-
-        if (aspectRatioX > 0 && aspectRatioY > 0) {
-            gestureCropImageView?.targetAspectRatio = aspectRatioX / aspectRatioY
-        } else if (!aspectRatioList.isEmpty() && aspectRationSelectedByDefault < aspectRatioList.size) {
-            gestureCropImageView?.targetAspectRatio = aspectRatioList[aspectRationSelectedByDefault].aspectRatioX / aspectRatioList[aspectRationSelectedByDefault].aspectRatioY
-        } else {
-            gestureCropImageView?.targetAspectRatio = CropImageView.SOURCE_IMAGE_ASPECT_RATIO
-        }
-
-        if (maxSizeX > 0 && maxSizeY > 0) {
-            gestureCropImageView?.setMaxResultImageSizeX(maxSizeX)
-            gestureCropImageView?.setMaxResultImageSizeY(maxSizeY)
-        }
-
-
-        gestureCropImageView?.setImageUri(inputUri, outputUri)
-        blockingView?.isClickable = false
+    /**
+     * @param color - desired background color that should be applied to the root view
+     */
+    fun setRootViewBackgroundColor(@ColorInt color: Int) {
+        setBackgroundColor(color)
     }
 
 }

@@ -120,7 +120,7 @@ class SampleActivity : BaseActivity() {
 
         rotateSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                uCropView.setRotate(progress)
+                uCropView.setRotate(progress.toFloat())
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -134,7 +134,7 @@ class SampleActivity : BaseActivity() {
 
         scaleSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                uCropView.setScale(progress)
+                uCropView.setScale(progress.toFloat() * 10)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {

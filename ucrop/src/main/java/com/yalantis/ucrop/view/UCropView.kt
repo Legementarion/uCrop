@@ -45,10 +45,9 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     @Retention(AnnotationRetention.SOURCE)
     annotation class GestureTypes
 
-    private var mAllowedGestures = intArrayOf(SCALE, ROTATE, ALL)
+    private var allowedGestures = intArrayOf(SCALE, ROTATE, ALL)
     private var compressFormat = DEFAULT_COMPRESS_FORMAT
     private var compressQuality = DEFAULT_COMPRESS_QUALITY
-    private val allowedGestures = mutableListOf<Int>()
 
     private var aspectRatioX: Float = 0f
     private var aspectRatioY: Float = 0f
@@ -113,7 +112,7 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         // Gestures options
         val allowedGestures = options.getIntArray(UCrop.Options.EXTRA_ALLOWED_GESTURES)
         if (allowedGestures != null && allowedGestures.size == TABS_COUNT) {
-            mAllowedGestures = allowedGestures
+            this.allowedGestures = allowedGestures
         }
 
         // Bitmap compression options
@@ -199,16 +198,6 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         blockingView?.isClickable = false
     }
 
-    // Gestures options
-
-    fun allowedGestures(bitmapSize: Int) {
-        if (allowedGestures != null && allowedGestures.size == TABS_COUNT)
-        {
-            mAllowedGestures = allowedGestures
-        }
-        gestureCropImageView?.maxBitmapSize = bitmapSize
-    }
-
     // Crop image view options
 
     /**
@@ -223,7 +212,7 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     /**
      * This method sets multiplier that is used to calculate max image scale from min image scale.
      *
-     * @param maxScaleMultiplier - (minScale * maxScaleMultiplier) = maxScale
+     * @param multiplier - (minScale * maxScaleMultiplier) = maxScale
      */
     fun setMaxScaleMultiplier(multiplier: Float) {
         gestureCropImageView?.setMaxScaleMultiplier(multiplier)
@@ -317,9 +306,23 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         overlayView?.setCropGridStrokeWidth(width)
     }
 
+    // Gestures options
+
     fun setAllowedGestures(tab: Int) {
-        gestureCropImageView?.isScaleEnabled = mAllowedGestures[tab] == ALL || mAllowedGestures[tab] == SCALE
-        gestureCropImageView?.isRotateEnabled = mAllowedGestures[tab] == ALL || mAllowedGestures[tab] == ROTATE
+        gestureCropImageView?.isScaleEnabled = allowedGestures[tab] == ALL || allowedGestures[tab] == SCALE
+        gestureCropImageView?.isRotateEnabled = allowedGestures[tab] == ALL || allowedGestures[tab] == ROTATE
+    }
+
+    fun setRotate(status: Boolean) {
+        gestureCropImageView.isRotateEnabled = status
+    }
+
+    fun setScale(status: Boolean) {
+        gestureCropImageView.isScaleEnabled = status
+    }
+
+    fun setDoubleTapScaleSteps(step: Int) {
+        gestureCropImageView.doubleTapScaleSteps = step
     }
 
     fun resetRotation() {

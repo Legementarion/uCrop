@@ -131,8 +131,8 @@ class SampleActivity : BaseActivity() {
 
     private fun startCrop(uri: Uri) {
         val destinationFileName = SAMPLE_CROPPED_IMAGE_NAME
-        basisConfig()
         uCropView.visibility = View.VISIBLE
+        basisConfig()
         settings.visibility = View.GONE
         uCropView.setImage(uri, Uri.fromFile(File(cacheDir, destinationFileName)))
         uCropView.animate().alpha(1f).setDuration(300).interpolator = AccelerateInterpolator()
@@ -167,7 +167,6 @@ class SampleActivity : BaseActivity() {
             } catch (e: NumberFormatException) {
                 Log.e(TAG, "Number please", e)
             }
-
         }
 
         when (radioGroupCompressionSettings.checkedRadioButtonId) {

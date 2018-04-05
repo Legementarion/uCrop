@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -44,5 +45,46 @@
     <include
         android:id="@+id/settings"
         layout="@layout/include_settings" />
+
+    <FrameLayout
+        android:id="@+id/panel"
+        android:layout_width="0dp"
+        android:layout_height="96dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <SeekBar
+            android:id="@+id/scaleSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:max="100"
+            android:progress="1"
+            tools:layout_editor_absoluteY="578dp" />
+
+        <SeekBar
+            android:id="@+id/rotateSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="26dp"
+            android:max="100"
+            android:progress="1"
+            tools:layout_editor_absoluteY="578dp" />
+
+        <Button
+            android:id="@+id/crop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="crop" />
+
+    </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>

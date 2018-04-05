@@ -36,6 +36,8 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         private const val ALL = 3
         private const val TABS_COUNT = 3
         private val DEFAULT_COMPRESS_FORMAT: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG
+        private const val SCALE_WIDGET_SENSITIVITY_COEFFICIENT = 15000
+        private const val ROTATE_WIDGET_SENSITIVITY_COEFFICIENT = 42
     }
 
     private var blockingView: View? = null
@@ -53,6 +55,9 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     private var aspectRatioY: Float = 0f
     private var maxSizeX = 0
     private var maxSizeY = 0
+    private var currentScale = 0
+    private var currentRotate = 0
+
 
     init {
         LayoutInflater.from(context).inflate(R.layout.ucrop_view, this, true)
@@ -313,11 +318,11 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         gestureCropImageView?.isRotateEnabled = allowedGestures[tab] == ALL || allowedGestures[tab] == ROTATE
     }
 
-    fun setRotate(status: Boolean) {
+    fun setRotateEnabled(status: Boolean) {
         gestureCropImageView.isRotateEnabled = status
     }
 
-    fun setScale(status: Boolean) {
+    fun setScaleEnabled(status: Boolean) {
         gestureCropImageView.isScaleEnabled = status
     }
 
@@ -392,6 +397,29 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
      */
     fun setRootViewBackgroundColor(@ColorInt color: Int) {
         setBackgroundColor(color)
+    }
+
+    fun setRotate(progress: Int) {
+        gestureCropImageView.postRotate(progress.toFloat() / ROTATE_WIDGET_SENSITIVITY_COEFFICIENT)
+        currentRotate = progress
+    }
+
+    fun setScale(progress: Int) {
+        if (progress > currentScale) {
+            gestureCropImageView.zoomInImage(gestureCropImageView.currentScale + progress * ((gestureCropImageView.maxScale - gestureCropImageView.minScale) / SCALE_WIDGET_SENSITIVITY_COEFFICIENT))
+        } else {
+            gestureCropImageView.zoomOutImage(gestureCropImageView.currentScale + progress * ((gestureCropImageView.maxScale - gestureCropImageView.minScale) / SCALE_WIDGET_SENSITIVITY_COEFFICIENT))
+        }
+
+        currentScale = progress
+    }
+
+    fun cancelAllAnimations() {
+        gestureCropImageView.cancelAllAnimations()
+    }
+
+    fun setImageToWrapCropBounds() {
+        gestureCropImageView.setImageToWrapCropBounds()
     }
 
 }

@@ -1,6 +1,7 @@
 package com.yalantis.ucrop.sample
 
 import android.Manifest
+import android.animation.TimeInterpolator
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -9,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateInterpolator
@@ -16,6 +18,7 @@ import android.widget.RadioButton
 import android.widget.SeekBar
 import android.widget.Toast
 import com.yalantis.ucrop.UCrop
+import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.view.UCropView.Companion.DEFAULT_COMPRESS_QUALITY
 import kotlinx.android.synthetic.main.activity_sample.*
 import kotlinx.android.synthetic.main.include_settings.*
@@ -47,11 +50,11 @@ class SampleActivity : BaseActivity() {
                     Toast.makeText(this@SampleActivity, R.string.toast_cannot_retrieve_selected_image, Toast.LENGTH_SHORT).show()
                 }
             } else if (requestCode == UCrop.REQUEST_CROP) {
-                handleCropResult(data)
+                handleCropResult(data.data)
             }
         }
         if (resultCode == UCrop.RESULT_ERROR) {
-            handleCropError(data)
+//            handleCropError(data)
         }
     }
 
@@ -102,6 +105,46 @@ class SampleActivity : BaseActivity() {
         radioArray.add(radioSquare)
         radio16x9.setOnClickListener(radioBtnClick)
         radioArray.add(radio16x9)
+
+        crop.setOnClickListener {
+            uCropView.cropAndSaveImage(object : BitmapCropCallback {
+                override fun onBitmapCropped(resultUri: Uri, offsetX: Int, offsetY: Int, imageWidth: Int, imageHeight: Int) {
+                    handleCropResult(resultUri)
+                }
+
+                override fun onCropFailure(t: Throwable) {
+                    handleCropError(t)
+                }
+            })
+        }
+
+        rotateSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                uCropView.setRotate(progress)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                uCropView.cancelAllAnimations()
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                uCropView.setImageToWrapCropBounds()
+            }
+        })
+
+        scaleSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                uCropView.setScale(progress)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                uCropView.cancelAllAnimations()
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                uCropView.setImageToWrapCropBounds()
+            }
+        })
     }
 
     private val radioBtnClick = View.OnClickListener {
@@ -132,6 +175,7 @@ class SampleActivity : BaseActivity() {
     private fun startCrop(uri: Uri) {
         val destinationFileName = SAMPLE_CROPPED_IMAGE_NAME
         uCropView.visibility = View.VISIBLE
+        panel.visibility = View.VISIBLE
         basisConfig()
         settings.visibility = View.GONE
         uCropView.setImage(uri, Uri.fromFile(File(cacheDir, destinationFileName)))
@@ -143,19 +187,21 @@ class SampleActivity : BaseActivity() {
      */
     private fun basisConfig() {
 
-        radioArray.forEach { if (it.isChecked) {
-            when (it.id) {
-                R.id.radioOrigin -> uCropView.useSourceImageAspectRatio()
-                R.id.radioSquare -> uCropView.withAspectRatio(1f, 1f)
-                R.id.radioDynamic -> {
-                }
-                R.id.radio16x9 -> {
-                    uCropView.withAspectRatio(16f, 9f)
-                }
-                else -> {
+        radioArray.forEach {
+            if (it.isChecked) {
+                when (it.id) {
+                    R.id.radioOrigin -> uCropView.useSourceImageAspectRatio()
+                    R.id.radioSquare -> uCropView.withAspectRatio(1f, 1f)
+                    R.id.radioDynamic -> {
+                    }
+                    R.id.radio16x9 -> {
+                        uCropView.withAspectRatio(16f, 9f)
+                    }
+                    else -> {
+                    }
                 }
             }
-        } }
+        }
 
         if (checkboxMaxSize.isChecked) {
             try {
@@ -168,6 +214,8 @@ class SampleActivity : BaseActivity() {
                 Log.e(TAG, "Number please", e)
             }
         }
+        uCropView.setRootViewBackgroundColor(ContextCompat.getColor(baseContext, R.color.colorText))
+        uCropView.setCircleDimmedLayer(true)
 
         when (radioGroupCompressionSettings.checkedRadioButtonId) {
             R.id.radio_png -> uCropView.setCompressionFormat(Bitmap.CompressFormat.PNG)
@@ -180,23 +228,12 @@ class SampleActivity : BaseActivity() {
 
     }
 
-    private fun handleCropResult(result: Intent) {
-        val resultUri = UCrop.getOutput(result)
-        if (resultUri != null) {
-            ResultActivity.startWithUri(this@SampleActivity, resultUri)
-        } else {
-            Toast.makeText(this@SampleActivity, R.string.toast_cannot_retrieve_cropped_image, Toast.LENGTH_SHORT).show()
-        }
+    private fun handleCropResult(result: Uri) {
+        ResultActivity.startWithUri(this@SampleActivity, result)
     }
 
-    private fun handleCropError(result: Intent) {
-        val cropError = UCrop.getError(result)
-        if (cropError != null) {
-            Log.e(TAG, "handleCropError: ", cropError)
-            Toast.makeText(this@SampleActivity, cropError.message, Toast.LENGTH_LONG).show()
-        } else {
-            Toast.makeText(this@SampleActivity, R.string.toast_unexpected_error, Toast.LENGTH_SHORT).show()
-        }
+    private fun handleCropError(result: Throwable) {
+        Toast.makeText(this@SampleActivity, result.message, Toast.LENGTH_LONG).show()
     }
 
 }

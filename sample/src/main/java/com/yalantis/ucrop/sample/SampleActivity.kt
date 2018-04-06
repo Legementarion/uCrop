@@ -1,7 +1,6 @@
 package com.yalantis.ucrop.sample
 
 import android.Manifest
-import android.animation.TimeInterpolator
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -19,6 +18,7 @@ import android.widget.SeekBar
 import android.widget.Toast
 import com.yalantis.ucrop.UCrop
 import com.yalantis.ucrop.callback.BitmapCropCallback
+import com.yalantis.ucrop.view.OverlayView.*
 import com.yalantis.ucrop.view.UCropView.Companion.DEFAULT_COMPRESS_QUALITY
 import kotlinx.android.synthetic.main.activity_sample.*
 import kotlinx.android.synthetic.main.include_settings.*
@@ -40,21 +40,30 @@ class SampleActivity : BaseActivity() {
         setupUI()
     }
 
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_SELECT_PICTURE) {
-                val selectedUri = data.data
+                val selectedUri = data?.data
                 if (selectedUri != null) {
                     startCrop(selectedUri)
                 } else {
                     Toast.makeText(this@SampleActivity, R.string.toast_cannot_retrieve_selected_image, Toast.LENGTH_SHORT).show()
                 }
             } else if (requestCode == UCrop.REQUEST_CROP) {
-                handleCropResult(data.data)
+                data?.let {
+                    handleCropResult(it.data)
+                }
             }
         }
         if (resultCode == UCrop.RESULT_ERROR) {
-//            handleCropError(data)
+            data?.let {
+                val cropError = UCrop.getError(data)
+                if (cropError != null) {
+                    handleCropError(cropError)
+                } else {
+                    Toast.makeText(this@SampleActivity, R.string.toast_unexpected_error, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
@@ -105,6 +114,13 @@ class SampleActivity : BaseActivity() {
         radioArray.add(radioSquare)
         radio16x9.setOnClickListener(radioBtnClick)
         radioArray.add(radio16x9)
+
+        checkboxFreestyleCrop.setOnCheckedChangeListener { _, checked ->
+            if (checked)
+                uCropView.setFreeStyleCropEnabled(FREESTYLE_CROP_MODE_ENABLE_WITH_PASS_THROUGH)
+            else
+                uCropView.setFreeStyleCropEnabled(FREESTYLE_CROP_MODE_DISABLE)
+        }
 
         crop.setOnClickListener {
             uCropView.cropAndSaveImage(object : BitmapCropCallback {
@@ -175,9 +191,9 @@ class SampleActivity : BaseActivity() {
     private fun startCrop(uri: Uri) {
         val destinationFileName = SAMPLE_CROPPED_IMAGE_NAME
         uCropView.visibility = View.VISIBLE
-        panel.visibility = View.VISIBLE
+//        panel.visibility = View.VISIBLE
         basisConfig()
-        settings.visibility = View.GONE
+//        settings.visibility = View.GONE
         uCropView.setImage(uri, Uri.fromFile(File(cacheDir, destinationFileName)))
         uCropView.animate().alpha(1f).setDuration(300).interpolator = AccelerateInterpolator()
     }
@@ -193,6 +209,7 @@ class SampleActivity : BaseActivity() {
                     R.id.radioOrigin -> uCropView.useSourceImageAspectRatio()
                     R.id.radioSquare -> uCropView.withAspectRatio(1f, 1f)
                     R.id.radioDynamic -> {
+                        uCropView.setFreeStyleCropEnabled(FREESTYLE_CROP_MODE_ENABLE)
                     }
                     R.id.radio16x9 -> {
                         uCropView.withAspectRatio(16f, 9f)
@@ -214,9 +231,7 @@ class SampleActivity : BaseActivity() {
                 Log.e(TAG, "Number please", e)
             }
         }
-        uCropView.setRootViewBackgroundColor(ContextCompat.getColor(baseContext, R.color.colorText))
-        uCropView.setCircleDimmedLayer(true)
-
+        uCropView.setRootViewBackgroundColor(ContextCompat.getColor(baseContext, R.color.colorBg))
         when (radioGroupCompressionSettings.checkedRadioButtonId) {
             R.id.radio_png -> uCropView.setCompressionFormat(Bitmap.CompressFormat.PNG)
             R.id.radio_jpeg -> {
@@ -235,5 +250,4 @@ class SampleActivity : BaseActivity() {
     private fun handleCropError(result: Throwable) {
         Toast.makeText(this@SampleActivity, result.message, Toast.LENGTH_LONG).show()
     }
-
 }

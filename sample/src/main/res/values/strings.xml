@@ -5,7 +5,7 @@
     <string name="label_sample">sample</string>
     <string name="label_aspect_ratio">Aspect ratio</string>
     <string name="label_dynamic">Dynamic</string>
-    <string name="label_image_source">Image source</string>
+    <string name="label_image_source">Origin</string>
     <string name="label_square">Square</string>
     <string name="label_max_cropped_image_size">Max cropped image size</string>
     <string name="label_compression_settings">Compression settings</string>

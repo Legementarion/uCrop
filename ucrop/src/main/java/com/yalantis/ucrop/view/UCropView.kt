@@ -407,6 +407,7 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             currentRotate += (progress - currentRotate)
             gestureCropImageView.postRotate(currentRotate * -1 / ROTATE_WIDGET_SENSITIVITY_COEFFICIENT)
         }
+
     }
 
     fun setScale(progress: Float) {

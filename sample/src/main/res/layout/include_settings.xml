@@ -79,11 +79,12 @@
 
                 <RadioButton
                     android:id="@+id/radioDynamic"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="false"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:ellipsize="end"
                     android:text="@string/label_dynamic"
                     android:textAppearance="?android:textAppearanceMedium"
+                    android:textSize="14sp"
                     app:layout_constraintBottom_toTopOf="@+id/radioOrigin"
                     app:layout_constraintEnd_toStartOf="@+id/radioSquare"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -94,44 +95,48 @@
                 <RadioButton
                     android:id="@+id/radioOrigin"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:checked="true"
+                    android:ellipsize="end"
                     android:text="@string/label_image_source"
                     android:textAppearance="?android:textAppearanceMedium"
-                    app:layout_constraintBottom_toTopOf="@+id/checkbox_freestyle_crop"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toTopOf="@+id/checkboxFreestyleCrop"
                     app:layout_constraintEnd_toStartOf="@+id/radio16x9"
-                    app:layout_constraintHorizontal_chainStyle="spread_inside"
                     app:layout_constraintStart_toStartOf="@+id/radioDynamic"
                     app:layout_constraintTop_toBottomOf="@+id/radioDynamic" />
 
                 <RadioButton
                     android:id="@+id/radioSquare"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="32dp"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="8dp"
+                    android:ellipsize="end"
+                    android:ems="3"
                     android:text="@string/label_square"
                     android:textAppearance="?android:textAppearanceMedium"
+                    android:textSize="14sp"
                     app:layout_constraintBottom_toTopOf="@+id/radio16x9"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/radioDynamic"
-                    app:layout_constraintTop_toBottomOf="@+id/title_aspect"
-                    android:layout_marginRight="32dp" />
+                    app:layout_constraintTop_toBottomOf="@+id/title_aspect" />
 
                 <RadioButton
                     android:id="@+id/radio16x9"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="32dp"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="8dp"
+                    android:ellipsize="end"
                     android:text="@string/label_16x9"
                     android:textAppearance="?android:textAppearanceMedium"
-                    app:layout_constraintBottom_toTopOf="@+id/checkbox_freestyle_crop"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toTopOf="@+id/checkboxFreestyleCrop"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/radioSquare"
-                    app:layout_constraintTop_toBottomOf="@+id/radioSquare"
-                    android:layout_marginRight="32dp" />
+                    app:layout_constraintTop_toBottomOf="@+id/radioSquare" />
 
                 <CheckBox
-                    android:id="@+id/checkbox_freestyle_crop"
+                    android:id="@+id/checkboxFreestyleCrop"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/label_freestyle_crop"
@@ -139,7 +144,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/radioOrigin" />
+                    app:layout_constraintTop_toBottomOf="@+id/radio16x9" />
             </android.support.constraint.ConstraintLayout>
 
         </RadioGroup>
@@ -307,6 +312,7 @@
                     android:checked="true"
                     android:text="JPEG"
                     android:textAppearance="?android:textAppearanceMedium"
+                    android:textSize="14sp"
                     tools:checked="true"
                     tools:ignore="HardcodedText" />
 
@@ -317,6 +323,7 @@
                     android:layout_weight="1"
                     android:text="PNG"
                     android:textAppearance="?android:textAppearanceMedium"
+                    android:textSize="14sp"
                     tools:ignore="HardcodedText" />
 
                 <RadioButton
@@ -326,6 +333,7 @@
                     android:layout_weight="1"
                     android:text="WEBP"
                     android:textAppearance="?android:textAppearanceMedium"
+                    android:textSize="14sp"
                     tools:ignore="HardcodedText" />
 
             </RadioGroup>

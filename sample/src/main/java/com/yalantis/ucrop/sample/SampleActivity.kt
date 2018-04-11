@@ -20,6 +20,7 @@ import com.yalantis.ucrop.UCrop
 import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.view.OverlayView.*
 import com.yalantis.ucrop.view.UCropView.Companion.DEFAULT_COMPRESS_QUALITY
+import com.yalantis.ucrop.view.widget.HorizontalProgressWheelView
 import kotlinx.android.synthetic.main.activity_sample.*
 import kotlinx.android.synthetic.main.include_settings.*
 import java.io.File
@@ -134,19 +135,21 @@ class SampleActivity : BaseActivity() {
             })
         }
 
-        rotateSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                uCropView.setRotate(progress.toFloat())
+
+        rotateBar.setScrollingListener(object : HorizontalProgressWheelView.ScrollingListener {
+            override fun onScroll(delta: Float, totalDistance: Float) {
+                uCropView.setRotate(delta)
             }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            override fun onScrollStart() {
                 uCropView.cancelAllAnimations()
             }
 
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            override fun onScrollEnd() {
                 uCropView.setImageToWrapCropBounds()
             }
         })
+        rotateBar.setMiddleLineColor(ContextCompat.getColor(baseContext, R.color.ucrop_color_widget_active))
 
         scaleSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -191,7 +194,7 @@ class SampleActivity : BaseActivity() {
     private fun startCrop(uri: Uri) {
         val destinationFileName = SAMPLE_CROPPED_IMAGE_NAME
         uCropView.visibility = View.VISIBLE
-//        panel.visibility = View.VISIBLE
+        panel.visibility = View.VISIBLE
         basisConfig()
 //        settings.visibility = View.GONE
         uCropView.setImage(uri, Uri.fromFile(File(cacheDir, destinationFileName)))

@@ -22,7 +22,8 @@
         </provider>
 
         <activity
-            android:name=".SampleActivity">
+            android:name=".SampleActivity"
+            android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

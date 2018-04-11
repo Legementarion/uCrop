@@ -55,9 +55,6 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     private var aspectRatioY: Float = 0f
     private var maxSizeX = 0
     private var maxSizeY = 0
-    private var currentScale = 0f
-    private var currentRotate = 0f
-
 
     init {
         LayoutInflater.from(context).inflate(R.layout.ucrop_view, this, true)
@@ -399,24 +396,16 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         setBackgroundColor(color)
     }
 
-    fun setRotate(progress: Float) {
-        if (progress - currentRotate > 0) {
-            currentRotate += (progress - currentRotate)
-            gestureCropImageView.postRotate(currentRotate / ROTATE_WIDGET_SENSITIVITY_COEFFICIENT)
-        } else {
-            currentRotate += (progress - currentRotate)
-            gestureCropImageView.postRotate(currentRotate * -1 / ROTATE_WIDGET_SENSITIVITY_COEFFICIENT)
-        }
-
+    fun setRotate(delta: Float) {
+        gestureCropImageView.postRotate(delta / ROTATE_WIDGET_SENSITIVITY_COEFFICIENT)
     }
 
-    fun setScale(progress: Float) {
-        if ((progress - currentScale) > 0) {
-            gestureCropImageView.zoomInImage(gestureCropImageView.currentScale + (progress - currentScale) * ((gestureCropImageView.maxScale - gestureCropImageView.minScale) / SCALE_WIDGET_SENSITIVITY_COEFFICIENT))
+    fun setScale(delta: Float) {
+        if (delta > 0) {
+            gestureCropImageView.zoomInImage(gestureCropImageView.currentScale + delta * ((gestureCropImageView.maxScale - gestureCropImageView.minScale) / SCALE_WIDGET_SENSITIVITY_COEFFICIENT))
         } else {
-            gestureCropImageView.zoomOutImage(gestureCropImageView.currentScale + (progress - currentScale) * ((gestureCropImageView.maxScale - gestureCropImageView.minScale) / SCALE_WIDGET_SENSITIVITY_COEFFICIENT))
+            gestureCropImageView.zoomOutImage(gestureCropImageView.currentScale + delta * ((gestureCropImageView.maxScale - gestureCropImageView.minScale) / SCALE_WIDGET_SENSITIVITY_COEFFICIENT))
         }
-        currentScale = progress
     }
 
     fun cancelAllAnimations() {

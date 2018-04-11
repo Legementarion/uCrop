@@ -46,45 +46,49 @@
         android:id="@+id/settings"
         layout="@layout/include_settings" />
 
-    <FrameLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/panel"
         android:layout_width="0dp"
         android:layout_height="96dp"
+        android:background="@color/ucrop_color_default_crop_frame"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toEndOf="@+id/settings">
 
         <SeekBar
             android:id="@+id/scaleSeekBar"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:max="1000"
             android:progress="1"
-            tools:layout_editor_absoluteY="578dp" />
+            app:layout_constraintBottom_toBottomOf="@+id/crop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/crop"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <SeekBar
-            android:id="@+id/rotateSeekBar"
+        <com.yalantis.ucrop.view.widget.HorizontalProgressWheelView
+            android:id="@+id/rotateBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="26dp"
-            android:max="1000"
-            android:progress="1"
-            tools:layout_editor_absoluteY="578dp" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/crop" />
 
         <Button
             android:id="@+id/crop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="✓" />
+            android:text="✓"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </FrameLayout>
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>

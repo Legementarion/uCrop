@@ -144,7 +144,7 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
         mCroppedImageWidth = Math.round(mCropRect.width() / mCurrentScale);
         mCroppedImageHeight = Math.round(mCropRect.height() / mCurrentScale);
 
-        boolean shouldCrop = shouldCrop(mCroppedImageWidth, mCroppedImageHeight);
+        boolean shouldCrop = shouldCrop(mCroppedImageWidth, mCroppedImageHeight, mCropRect, mCurrentImageRect);
         Log.i(TAG, "Should crop: " + shouldCrop);
 
         if (shouldCrop) {
@@ -184,14 +184,14 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
      * @param height - crop area height
      * @return - true if image must be cropped, false - if original image fits requirements
      */
-    private boolean shouldCrop(int width, int height) {
+    public boolean shouldCrop(int width, int height, RectF cropRect, RectF currentImageRect) {
         int pixelError = 1;
         pixelError += Math.round(Math.max(width, height) / 1000f);
         return (mMaxResultImageSizeX > 0 && mMaxResultImageSizeY > 0)
-                || Math.abs(mCropRect.left - mCurrentImageRect.left) > pixelError
-                || Math.abs(mCropRect.top - mCurrentImageRect.top) > pixelError
-                || Math.abs(mCropRect.bottom - mCurrentImageRect.bottom) > pixelError
-                || Math.abs(mCropRect.right - mCurrentImageRect.right) > pixelError;
+                || Math.abs(cropRect.left - currentImageRect.left) > pixelError
+                || Math.abs(cropRect.top - currentImageRect.top) > pixelError
+                || Math.abs(cropRect.bottom - currentImageRect.bottom) > pixelError
+                || Math.abs(cropRect.right - currentImageRect.right) > pixelError;
     }
 
     @Override

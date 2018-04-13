@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ucrop_photobox"
+    android:id="@+id/ucropPhotobox"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -22,7 +22,7 @@
             tools:ignore="ContentDescription,MissingPrefix" />
 
         <com.yalantis.ucrop.view.UCropView
-            android:id="@+id/ucrop"
+            android:id="@+id/ucropView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:alpha="0" />

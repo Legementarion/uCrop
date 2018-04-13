@@ -9,18 +9,18 @@
         android:background="@color/ucrop_color_widget_background">
 
         <LinearLayout
-            android:id="@+id/layout_aspect_ratio"
+            android:id="@+id/layoutAspectRatio"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="horizontal"/>
 
         <include
-            android:id="@+id/layout_rotate_wheel"
+            android:id="@+id/layoutRotate"
             layout="@layout/ucrop_layout_rotate_wheel"/>
 
         <include
-            android:id="@+id/layout_scale_wheel"
+            android:id="@+id/layoutScale"
             layout="@layout/ucrop_layout_scale_wheel"/>
 
     </FrameLayout>
@@ -42,7 +42,7 @@
         android:orientation="horizontal">
 
         <FrameLayout
-            android:id="@+id/state_scale"
+            android:id="@+id/stateScale"
             style="@style/ucrop_WrapperIconState">
 
             <ImageView
@@ -53,7 +53,7 @@
         </FrameLayout>
 
         <FrameLayout
-            android:id="@+id/state_aspect_ratio"
+            android:id="@+id/stateAspectRatio"
             style="@style/ucrop_WrapperIconState">
 
             <ImageView
@@ -64,7 +64,7 @@
         </FrameLayout>
 
         <FrameLayout
-            android:id="@+id/state_rotate"
+            android:id="@+id/stateRotate"
             style="@style/ucrop_WrapperIconState">
 
             <ImageView

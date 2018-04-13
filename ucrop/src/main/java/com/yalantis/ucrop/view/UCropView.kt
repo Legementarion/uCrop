@@ -2,6 +2,7 @@ package com.yalantis.ucrop.view
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.RectF
 import android.net.Uri
 import android.os.Bundle
 import android.support.annotation.ColorInt
@@ -17,7 +18,7 @@ import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import com.yalantis.ucrop.R
 import com.yalantis.ucrop.UCrop
-import com.yalantis.ucrop.UCrop.MIN_SIZE
+import com.yalantis.ucrop.UCrop.Companion.MIN_SIZE
 import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.callback.CropBoundsChangeListener
 import com.yalantis.ucrop.callback.OverlayViewChangeListener
@@ -30,14 +31,14 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
     companion object {
         const val DEFAULT_COMPRESS_QUALITY = 90
-        private const val NONE = 0
-        private const val SCALE = 1
-        private const val ROTATE = 2
-        private const val ALL = 3
-        private const val TABS_COUNT = 3
-        private val DEFAULT_COMPRESS_FORMAT: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG
-        private const val SCALE_WIDGET_SENSITIVITY_COEFFICIENT = 15000
-        private const val ROTATE_WIDGET_SENSITIVITY_COEFFICIENT = 42
+        const val NONE = 0
+        const val SCALE = 1
+        const val ROTATE = 2
+        const val ALL = 3
+        const val TABS_COUNT = 3
+        val DEFAULT_COMPRESS_FORMAT: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG
+        const val SCALE_WIDGET_SENSITIVITY_COEFFICIENT = 15000
+        const val ROTATE_WIDGET_SENSITIVITY_COEFFICIENT = 42
     }
 
     private var blockingView: View? = null
@@ -68,8 +69,17 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     }
 
     private fun setListenersToViews() {
-        gestureCropImageView?.cropBoundsChangeListener = CropBoundsChangeListener { cropRatio -> overlayView.setTargetAspectRatio(cropRatio) }
-        overlayView?.overlayViewChangeListener = OverlayViewChangeListener { cropRect -> gestureCropImageView?.setCropRect(cropRect) }
+        gestureCropImageView?.cropBoundsChangeListener = object : CropBoundsChangeListener {
+            override fun onCropAspectRatioChanged(cropRatio: Float) {
+                overlayView.setTargetAspectRatio(cropRatio)
+            }
+        }
+
+        overlayView?.overlayViewChangeListener = object : OverlayViewChangeListener {
+            override fun onCropRectUpdated(cropRect: RectF) {
+                gestureCropImageView?.setCropRect(cropRect)
+            }
+        }
     }
 
     override fun shouldDelayChildPressedState(): Boolean {
@@ -81,7 +91,7 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
      * When it's clickable - user won't be able to click/touch anything below the Toolbar.
      * Need to block user input while loading and cropping an image.
      */
-    private fun addBlockingView() {
+    fun addBlockingView(): View? {
         if (blockingView == null) {
             blockingView = View(this.context)
             val lp = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
@@ -90,6 +100,7 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         }
 
         addView(blockingView)
+        return blockingView
     }
 
     /**

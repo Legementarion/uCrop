@@ -22,9 +22,6 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * Created by Oleksii Shliama (https://github.com/shliama).
- */
 public class BitmapLoadUtils {
 
     private static final String TAG = "BitmapLoadUtils";

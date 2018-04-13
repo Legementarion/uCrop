@@ -8,22 +8,22 @@
                 tools:visibility="visible">
 
     <TextView
-        android:id="@+id/text_view_rotate"
+        android:id="@+id/textViewRotateAngle"
         style="@style/ucrop_TextViewWidgetText"
         android:text="100°"/>
 
     <com.yalantis.ucrop.view.widget.HorizontalProgressWheelView
-        android:id="@+id/rotate_scroll_wheel"
+        android:id="@+id/rotateScrollWheel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/text_view_rotate"
-        android:layout_toEndOf="@+id/wrapper_reset_rotate"
-        android:layout_toLeftOf="@+id/wrapper_rotate_by_angle"
-        android:layout_toRightOf="@+id/wrapper_reset_rotate"
-        android:layout_toStartOf="@+id/wrapper_rotate_by_angle"/>
+        android:layout_below="@+id/textViewRotateAngle"
+        android:layout_toEndOf="@+id/wrapperResetRotate"
+        android:layout_toLeftOf="@+id/wrapperRotateByAngle"
+        android:layout_toRightOf="@+id/wrapperResetRotate"
+        android:layout_toStartOf="@+id/wrapperRotateByAngle"/>
 
     <FrameLayout
-        android:id="@+id/wrapper_reset_rotate"
+        android:id="@+id/wrapperResetRotate"
         style="@style/ucrop_WrapperRotateButton"
         android:layout_centerVertical="true">
 
@@ -34,7 +34,7 @@
     </FrameLayout>
 
     <FrameLayout
-        android:id="@+id/wrapper_rotate_by_angle"
+        android:id="@+id/wrapperRotateByAngle"
         style="@style/ucrop_WrapperRotateButton"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"

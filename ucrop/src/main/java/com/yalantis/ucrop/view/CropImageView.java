@@ -24,8 +24,6 @@ import java.lang.ref.WeakReference;
 import java.util.Arrays;
 
 /**
- * Created by Oleksii Shliama (https://github.com/shliama).
- * <p/>
  * This class adds crop feature, methods to draw crop guidelines, and keep image in correct state.
  * Also it extends parent class methods to add checks for scale; animating zoom in/out.
  */

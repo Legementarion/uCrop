@@ -16,7 +16,6 @@ import com.yalantis.ucrop.model.CropParameters;
 import com.yalantis.ucrop.model.ExifInfo;
 import com.yalantis.ucrop.model.ImageState;
 import com.yalantis.ucrop.util.BitmapLoadUtils;
-import com.yalantis.ucrop.util.FileUtils;
 import com.yalantis.ucrop.util.ImageHeaderParser;
 
 import java.io.File;
@@ -24,6 +23,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
+
+import static com.yalantis.ucrop.util.FileExtensionKt.copyFile;
 
 /**
  * Crops part of image that fills the crop bounds.
@@ -155,7 +156,7 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
             }
             return true;
         } else {
-            FileUtils.copyFile(mImageInputPath, mImageOutputPath);
+            copyFile(mImageInputPath, mImageOutputPath);
             return false;
         }
     }

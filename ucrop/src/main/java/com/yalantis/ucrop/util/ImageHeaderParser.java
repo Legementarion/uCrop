@@ -420,6 +420,4 @@ public class ImageHeaderParser {
             Log.d(TAG, e.getMessage());
         }
     }
-
 }
-

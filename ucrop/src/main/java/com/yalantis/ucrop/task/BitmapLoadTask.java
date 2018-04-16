@@ -19,7 +19,6 @@ import android.util.Log;
 import com.yalantis.ucrop.callback.BitmapLoadCallback;
 import com.yalantis.ucrop.model.ExifInfo;
 import com.yalantis.ucrop.util.BitmapLoadUtils;
-import com.yalantis.ucrop.util.FileUtils;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -35,6 +34,8 @@ import okhttp3.Response;
 import okio.BufferedSource;
 import okio.Okio;
 import okio.Sink;
+
+import static com.yalantis.ucrop.util.FileExtensionKt.getPath;
 
 /**
  * Creates and returns a Bitmap for a given Uri(String url).
@@ -191,7 +192,7 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
     private String getFilePath() {
         if (ContextCompat.checkSelfPermission(mContext, permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
-            return FileUtils.getPath(mContext, mInputUri);
+            return getPath(mContext, mInputUri);
         } else {
             return null;
         }

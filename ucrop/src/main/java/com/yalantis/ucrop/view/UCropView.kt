@@ -111,7 +111,7 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         gestureCropImageView.invalidate()
 //        gestureCropImageView = GestureCropImageView(context)
         setListenersToViews()
-        gestureCropImageView?.setCropRect(overlayView?.cropViewRect)
+        overlayView?.cropViewRect?.let { gestureCropImageView?.setCropRect(it) }
         addView(gestureCropImageView, 0)
     }
 
@@ -244,8 +244,8 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     /**
      * @param mode - let user resize crop bounds (disabled by default)
      */
-    fun setFreeStyleCropEnabled(mode: Int) {
-        overlayView.freestyleCropMode = FreestyleMode.values()[mode]
+    fun setFreeStyleCropEnabled(mode: FreestyleMode) {
+        overlayView.freestyleCropMode = mode
     }
 
     /**

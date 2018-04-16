@@ -18,6 +18,7 @@ import android.widget.SeekBar
 import android.widget.Toast
 import com.yalantis.ucrop.UCrop
 import com.yalantis.ucrop.callback.BitmapCropCallback
+import com.yalantis.ucrop.model.FreestyleMode
 import com.yalantis.ucrop.view.OverlayView.*
 import com.yalantis.ucrop.view.UCropView.Companion.DEFAULT_COMPRESS_QUALITY
 import com.yalantis.ucrop.view.widget.HorizontalProgressWheelView
@@ -118,9 +119,9 @@ class SampleActivity : BaseActivity() {
 
         checkboxFreestyleCrop.setOnCheckedChangeListener { _, checked ->
             if (checked)
-                uCropView.setFreeStyleCropEnabled(FREESTYLE_CROP_MODE_ENABLE_WITH_PASS_THROUGH)
+                uCropView.setFreeStyleCropEnabled(FreestyleMode.CROP_MODE_ENABLE_WITH_PASS_THROUGH)
             else
-                uCropView.setFreeStyleCropEnabled(FREESTYLE_CROP_MODE_DISABLE)
+                uCropView.setFreeStyleCropEnabled(FreestyleMode.CROP_MODE_DISABLE)
         }
 
         crop.setOnClickListener {
@@ -212,7 +213,7 @@ class SampleActivity : BaseActivity() {
                     R.id.radioOrigin -> uCropView.useSourceImageAspectRatio()
                     R.id.radioSquare -> uCropView.withAspectRatio(1f, 1f)
                     R.id.radioDynamic -> {
-                        uCropView.setFreeStyleCropEnabled(FREESTYLE_CROP_MODE_ENABLE)
+                        uCropView.setFreeStyleCropEnabled(FreestyleMode.CROP_MODE_ENABLE)
                     }
                     R.id.radio16x9 -> {
                         uCropView.withAspectRatio(16f, 9f)

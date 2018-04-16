@@ -23,7 +23,7 @@ import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.callback.CropBoundsChangeListener
 import com.yalantis.ucrop.callback.OverlayViewChangeListener
 import com.yalantis.ucrop.model.AspectRatio
-import com.yalantis.ucrop.view.OverlayView.FREESTYLE_CROP_MODE_DISABLE
+import com.yalantis.ucrop.model.FreestyleMode
 import kotlinx.android.synthetic.main.ucrop_view.view.*
 
 class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
@@ -42,7 +42,6 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     }
 
     private var blockingView: View? = null
-
 
     @IntDef(NONE, SCALE, ROTATE, ALL)
     @Retention(AnnotationRetention.SOURCE)
@@ -145,7 +144,7 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         gestureCropImageView?.setImageToWrapCropBoundsAnimDuration(options.getInt(UCrop.Options.EXTRA_IMAGE_TO_CROP_BOUNDS_ANIM_DURATION, CropImageView.DEFAULT_IMAGE_TO_CROP_BOUNDS_ANIM_DURATION).toLong())
 
         // Overlay view options
-        overlayView?.freestyleCropMode = options.getInt(UCrop.Options.EXTRA_FREE_STYLE_CROP, FREESTYLE_CROP_MODE_DISABLE)
+        overlayView?.freestyleCropMode = FreestyleMode.values()[options.getInt(UCrop.Options.EXTRA_FREE_STYLE_CROP, FreestyleMode.CROP_MODE_DISABLE.ordinal)]
 
         overlayView?.setDimmedColor(options.getInt(UCrop.Options.EXTRA_DIMMED_LAYER_COLOR, ContextCompat.getColor(context, R.color.ucrop_color_default_dimmed)))
         overlayView?.setCircleDimmedLayer(options.getBoolean(UCrop.Options.EXTRA_CIRCLE_DIMMED_LAYER, OverlayView.DEFAULT_CIRCLE_DIMMED_LAYER))
@@ -246,7 +245,7 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
      * @param mode - let user resize crop bounds (disabled by default)
      */
     fun setFreeStyleCropEnabled(mode: Int) {
-        overlayView.freestyleCropMode = mode
+        overlayView.freestyleCropMode = FreestyleMode.values()[mode]
     }
 
     /**

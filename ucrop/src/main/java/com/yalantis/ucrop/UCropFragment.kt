@@ -17,7 +17,6 @@ import android.view.animation.AccelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.callback.UCropFragmentCallback
 import com.yalantis.ucrop.model.AspectRatio
@@ -174,7 +173,7 @@ class UCropFragment : Fragment() {
 
     private fun initiateRootViews(view: View) {
         mGestureCropImageView = ucropView.getCropImageView()
-        mGestureCropImageView?.setTransformImageListener(mImageListener)
+        mGestureCropImageView?.transformImageListener = mImageListener
 
         (view.findViewById<View>(R.id.image_view_logo) as ImageView).setColorFilter(mLogoColor, PorterDuff.Mode.SRC_ATOP)
 

@@ -14,7 +14,9 @@ import com.yalantis.ucrop.model.CropParameters
 import com.yalantis.ucrop.model.ImageState
 import com.yalantis.ucrop.task.BitmapCropTask
 import com.yalantis.ucrop.util.CubicEasing
-import com.yalantis.ucrop.util.RectUtils
+import com.yalantis.ucrop.util.getCornersFromRect
+import com.yalantis.ucrop.util.getRectSidesFromCorners
+import com.yalantis.ucrop.util.trapToRect
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -76,9 +78,7 @@ open class CropImageView @JvmOverloads constructor(context: Context,
                 targetAspectRatio
             }
 
-            if (cropBoundsChangeListener != null) {
-                cropBoundsChangeListener!!.onCropAspectRatioChanged(targetAspectRatio)
-            }
+            cropBoundsChangeListener?.onCropAspectRatioChanged(targetAspectRatio)
         }
 
     /**
@@ -97,7 +97,7 @@ open class CropImageView @JvmOverloads constructor(context: Context,
         setImageToWrapCropBounds(false)
 
         val imageState = ImageState(
-                cropRect, RectUtils.trapToRect(currentImageCorners),
+                cropRect, currentImageCorners.trapToRect(),
                 currentScale, currentAngle)
 
         val cropParameters = CropParameters(
@@ -238,7 +238,7 @@ open class CropImageView @JvmOverloads constructor(context: Context,
      */
     @JvmOverloads
     fun setImageToWrapCropBounds(animate: Boolean = true) {
-        if (mBitmapLaidOut && !isImageWrapCropBounds) {
+        if (isBitmapLaidOut && !isImageWrapCropBounds) {
 
             val currentX = currentImageCenter[0]
             val currentY = currentImageCenter[1]
@@ -266,7 +266,7 @@ open class CropImageView @JvmOverloads constructor(context: Context,
                 tempMatrix.setRotate(currentAngle)
                 tempMatrix.mapRect(tempCropRect)
 
-                val currentImageSides = RectUtils.getRectSidesFromCorners(currentImageCorners)
+                val currentImageSides = currentImageCorners.getRectSidesFromCorners()
 
                 deltaScale = Math.max(tempCropRect.width() / currentImageSides[0],
                         tempCropRect.height() / currentImageSides[1])
@@ -298,14 +298,14 @@ open class CropImageView @JvmOverloads constructor(context: Context,
         tempMatrix.reset()
         tempMatrix.setRotate(-currentAngle)
 
-        val unrotatedImageCorners = Arrays.copyOf(currentImageCorners, currentImageCorners.size)
-        val unrotatedCropBoundsCorners = RectUtils.getCornersFromRect(cropRect)
+        val unRotatedImageCorners = Arrays.copyOf(currentImageCorners, currentImageCorners.size)
+        val unRotatedCropBoundsCorners = cropRect.getCornersFromRect()
 
-        tempMatrix.mapPoints(unrotatedImageCorners)
-        tempMatrix.mapPoints(unrotatedCropBoundsCorners)
+        tempMatrix.mapPoints(unRotatedImageCorners)
+        tempMatrix.mapPoints(unRotatedCropBoundsCorners)
 
-        val unRotatedImageRect = RectUtils.trapToRect(unrotatedImageCorners)
-        val unRotatedCropRect = RectUtils.trapToRect(unrotatedCropBoundsCorners)
+        val unRotatedImageRect = unRotatedImageCorners.trapToRect()
+        val unRotatedCropRect = unRotatedCropBoundsCorners.trapToRect()
 
         val deltaLeft = unRotatedImageRect.left - unRotatedCropRect.left
         val deltaTop = unRotatedImageRect.top - unRotatedCropRect.top
@@ -352,13 +352,11 @@ open class CropImageView @JvmOverloads constructor(context: Context,
         calculateImageScaleBounds(drawableWidth, drawableHeight)
         setupInitialImagePosition(drawableWidth, drawableHeight)
 
-        if (cropBoundsChangeListener != null) {
-            cropBoundsChangeListener!!.onCropAspectRatioChanged(targetAspectRatio)
-        }
-        if (mTransformImageListener != null) {
-            mTransformImageListener!!.onScale(currentScale)
-            mTransformImageListener!!.onRotate(currentAngle)
-        }
+        cropBoundsChangeListener?.onCropAspectRatioChanged(targetAspectRatio)
+
+        transformImageListener?.onScale(currentScale)
+        transformImageListener?.onRotate(currentAngle)
+
     }
 
     /**
@@ -375,10 +373,10 @@ open class CropImageView @JvmOverloads constructor(context: Context,
         val unRotatedImageCorners = Arrays.copyOf(imageCorners, imageCorners.size)
         tempMatrix.mapPoints(unRotatedImageCorners)
 
-        val unRotatedCropBoundsCorners = RectUtils.getCornersFromRect(cropRect)
+        val unRotatedCropBoundsCorners = cropRect.getCornersFromRect()
         tempMatrix.mapPoints(unRotatedCropBoundsCorners)
 
-        return RectUtils.trapToRect(unRotatedImageCorners).contains(RectUtils.trapToRect(unRotatedCropBoundsCorners))
+        return unRotatedImageCorners.trapToRect().contains(unRotatedCropBoundsCorners.trapToRect())
     }
 
     /**
@@ -527,7 +525,5 @@ open class CropImageView @JvmOverloads constructor(context: Context,
                 cropImageView.setImageToWrapCropBounds()
             }
         }
-
     }
-
 }

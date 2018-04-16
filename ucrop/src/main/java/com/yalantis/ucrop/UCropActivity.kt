@@ -255,7 +255,7 @@ class UCropActivity : AppCompatActivity() {
 
     private fun initiateRootViews() {
         mGestureCropImageView = ucropView.getCropImageView()
-        mGestureCropImageView?.setTransformImageListener(mImageListener)
+        mGestureCropImageView?.transformImageListener = mImageListener
 
         (findViewById<View>(R.id.image_view_logo) as ImageView).setColorFilter(mLogoColor, PorterDuff.Mode.SRC_ATOP)
 

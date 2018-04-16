@@ -14,7 +14,8 @@ import com.yalantis.ucrop.R
 import com.yalantis.ucrop.callback.OverlayViewChangeListener
 import com.yalantis.ucrop.model.FreestyleMode.CROP_MODE_DISABLE
 import com.yalantis.ucrop.model.FreestyleMode.CROP_MODE_ENABLE
-import com.yalantis.ucrop.util.RectUtils
+import com.yalantis.ucrop.util.getCenterFromRect
+import com.yalantis.ucrop.util.getCornersFromRect
 
 /**
  * This view is used for drawing the overlay on top of the image. It may have frame, crop guidelines and dimmed area.
@@ -66,7 +67,8 @@ class OverlayView @JvmOverloads constructor(context: Context,
     private var mShouldSetupCropBounds: Boolean = false
 
     var freestyleCropMode = DEFAULT_FREESTYLE_CROP_MODE
-        set(mFreestyleCropMode) {
+        set(value) {
+            field = value
             postInvalidate()
         }
 
@@ -216,8 +218,8 @@ class OverlayView @JvmOverloads constructor(context: Context,
     }
 
     private fun updateGridPoints() {
-        cropGridCorners = RectUtils.getCornersFromRect(cropViewRect)
-        cropGridCenter = RectUtils.getCenterFromRect(cropViewRect)
+        cropGridCorners = cropViewRect.getCornersFromRect()
+        cropGridCenter = cropViewRect.getCenterFromRect()
 
         gridPoints = null
         circularPath.reset()

@@ -104,7 +104,6 @@ public class RotationGestureDetector {
     }
 
     public interface OnRotationGestureListener {
-
         boolean onRotation(RotationGestureDetector rotationDetector);
     }
 

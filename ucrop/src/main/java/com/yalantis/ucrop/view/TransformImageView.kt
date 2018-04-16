@@ -15,7 +15,8 @@ import com.yalantis.ucrop.callback.BitmapLoadCallback
 import com.yalantis.ucrop.model.ExifInfo
 import com.yalantis.ucrop.util.BitmapLoadUtils
 import com.yalantis.ucrop.util.FastBitmapDrawable
-import com.yalantis.ucrop.util.RectUtils
+import com.yalantis.ucrop.util.getCenterFromRect
+import com.yalantis.ucrop.util.getCornersFromRect
 
 /**
  * This class provides base logic to setup the image, transform it with matrix (move, scale, rotate),
@@ -42,16 +43,15 @@ open class TransformImageView @JvmOverloads constructor(context: Context,
     protected var currentWidth: Int = 0
     protected var currentHeight: Int = 0
 
-    protected var mTransformImageListener: TransformImageListener? = null
+    var transformImageListener: TransformImageListener? = null
 
-    private var mInitialImageCorners: FloatArray? = null
-    private var mInitialImageCenter: FloatArray? = null
+    private var initialImageCorners: FloatArray? = null
+    private var initialImageCenter: FloatArray? = null
 
-    protected var mBitmapDecoded = false
-    protected var mBitmapLaidOut = false
+    protected var isBitmapDecoded = false
+    protected var isBitmapLaidOut = false
 
     /**
-     * Setter for [.mMaxBitmapSize] value.
      * Be sure to call it before [.setImageURI] or other image setters.
      *
      * @param maxBitmapSize - max size for both width and height of bitmap that will be used in the view.
@@ -110,10 +110,6 @@ open class TransformImageView @JvmOverloads constructor(context: Context,
         init()
     }
 
-    fun setTransformImageListener(transformImageListener: TransformImageListener) {
-        mTransformImageListener = transformImageListener
-    }
-
     override fun setScaleType(scaleType: ImageView.ScaleType) {
         if (scaleType == ImageView.ScaleType.MATRIX) {
             super.setScaleType(scaleType)
@@ -122,7 +118,7 @@ open class TransformImageView @JvmOverloads constructor(context: Context,
         }
     }
 
-    override fun setImageBitmap(bitmap: Bitmap?) {
+    override fun setImageBitmap(bitmap: Bitmap) {
         setImageDrawable(FastBitmapDrawable(bitmap))
     }
 
@@ -144,15 +140,13 @@ open class TransformImageView @JvmOverloads constructor(context: Context,
                         outputPath = imageOutputPath
                         currentExifInfo = exifInfo
 
-                        mBitmapDecoded = true
+                        isBitmapDecoded = true
                         setImageBitmap(bitmap)
                     }
 
                     override fun onFailure(bitmapWorkerException: Exception) {
                         Log.e(TAG, "onFailure: setImageUri", bitmapWorkerException)
-                        if (mTransformImageListener != null) {
-                            mTransformImageListener?.onLoadFailure(bitmapWorkerException)
-                        }
+                        transformImageListener?.onLoadFailure(bitmapWorkerException)
                     }
                 })
     }
@@ -202,9 +196,7 @@ open class TransformImageView @JvmOverloads constructor(context: Context,
         if (deltaScale != 0f) {
             currentImageMatrix.postScale(deltaScale, deltaScale, px, py)
             imageMatrix = currentImageMatrix
-            if (mTransformImageListener != null) {
-                mTransformImageListener?.onScale(getMatrixScale(currentImageMatrix))
-            }
+            transformImageListener?.onScale(getMatrixScale(currentImageMatrix))
         }
     }
 
@@ -219,9 +211,7 @@ open class TransformImageView @JvmOverloads constructor(context: Context,
         if (deltaAngle != 0f) {
             currentImageMatrix.postRotate(deltaAngle, px, py)
             imageMatrix = currentImageMatrix
-            if (mTransformImageListener != null) {
-                mTransformImageListener?.onRotate(getMatrixAngle(currentImageMatrix))
-            }
+            transformImageListener?.onRotate(getMatrixAngle(currentImageMatrix))
         }
     }
 
@@ -235,7 +225,7 @@ open class TransformImageView @JvmOverloads constructor(context: Context,
         var newRight = right
         var newBottom = bottom
         super.onLayout(changed, newLeft, newTop, newRight, newBottom)
-        if (changed || mBitmapDecoded && !mBitmapLaidOut) {
+        if (changed || isBitmapDecoded && !isBitmapLaidOut) {
             newLeft = paddingLeft
             newTop = paddingTop
             newRight = width - paddingRight
@@ -260,14 +250,12 @@ open class TransformImageView @JvmOverloads constructor(context: Context,
         Log.d(TAG, String.format("Image size: [%d:%d]", w.toInt(), h.toInt()))
 
         val initialImageRect = RectF(0f, 0f, w, h)
-        mInitialImageCorners = RectUtils.getCornersFromRect(initialImageRect)
-        mInitialImageCenter = RectUtils.getCenterFromRect(initialImageRect)
+        initialImageCorners = initialImageRect.getCornersFromRect()
+        initialImageCenter = initialImageRect.getCenterFromRect()
 
-        mBitmapLaidOut = true
+        isBitmapLaidOut = true
 
-        if (mTransformImageListener != null) {
-            mTransformImageListener?.onLoadComplete()
-        }
+        transformImageListener?.onLoadComplete()
     }
 
     /**
@@ -300,8 +288,8 @@ open class TransformImageView @JvmOverloads constructor(context: Context,
      * Those are used for several calculations.
      */
     private fun updateCurrentImagePoints() {
-        currentImageMatrix.mapPoints(currentImageCorners, mInitialImageCorners)
-        currentImageMatrix.mapPoints(currentImageCenter, mInitialImageCenter)
+        currentImageMatrix.mapPoints(currentImageCorners, initialImageCorners)
+        currentImageMatrix.mapPoints(currentImageCenter, initialImageCenter)
     }
 
 }

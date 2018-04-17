@@ -16,8 +16,8 @@
         app:titleTextColor="@android:color/white"/>
 
     <com.yalantis.ucrop.view.UCropView
-        android:id="@+id/ucrop"
+        android:id="@+id/uCropView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

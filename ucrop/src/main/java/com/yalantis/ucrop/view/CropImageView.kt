@@ -115,7 +115,7 @@ open class CropImageView @JvmOverloads constructor(context: Context,
      * @param cropRect - new crop rectangle
      */
     fun setCropRect(cropRect: RectF) {
-        targetAspectRatio = cropRect.width() / cropRect.height()
+//        targetAspectRatio = cropRect.width() / cropRect.height() todo set without setter
         this.cropRect.set(cropRect.left - paddingLeft, cropRect.top - paddingTop,
                 cropRect.right - paddingRight, cropRect.bottom - paddingBottom)
         calculateImageScaleBounds()

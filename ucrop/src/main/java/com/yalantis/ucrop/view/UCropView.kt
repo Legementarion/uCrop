@@ -68,15 +68,15 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     }
 
     private fun setListenersToViews() {
-        gestureCropImageView?.cropBoundsChangeListener = object : CropBoundsChangeListener {
+        gestureCropImageView.cropBoundsChangeListener = object : CropBoundsChangeListener {
             override fun onCropAspectRatioChanged(cropRatio: Float) {
                 overlayView.setTargetAspectRatio(cropRatio)
             }
         }
 
-        overlayView?.overlayViewChangeListener = object : OverlayViewChangeListener {
+        overlayView.overlayViewChangeListener = object : OverlayViewChangeListener {
             override fun onCropRectUpdated(cropRect: RectF) {
-                gestureCropImageView?.setCropRect(cropRect)
+                gestureCropImageView.setCropRect(cropRect)
             }
         }
     }

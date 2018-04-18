@@ -57,6 +57,9 @@ open class CropImageView @JvmOverloads constructor(context: Context,
     private var maxResultImageSizeY = 0
     private var mImageToWrapCropBoundsAnimDuration = DEFAULT_IMAGE_TO_CROP_BOUNDS_ANIM_DURATION.toLong()
 
+    var targetAspectRatio: Float = 0f
+        private set
+
     /**
      * This method sets aspect ratio for crop bounds.
      * If [.SOURCE_IMAGE_ASPECT_RATIO] value is passed - aspect ratio is calculated
@@ -64,22 +67,22 @@ open class CropImageView @JvmOverloads constructor(context: Context,
      *
      * @param targetAspectRatio - aspect ratio for image crop (e.g. 1.77(7) for 16:9)
      */
-    var targetAspectRatio: Float = 0f
-        set(targetAspectRatio) {
-            val drawable = drawable
-            if (drawable == null) {
-                field = targetAspectRatio
-                return
-            }
-
-            field = if (targetAspectRatio == SOURCE_IMAGE_ASPECT_RATIO) {
-                drawable.intrinsicWidth / drawable.intrinsicHeight.toFloat()
-            } else {
-                targetAspectRatio
-            }
-
-            cropBoundsChangeListener?.onCropAspectRatioChanged(targetAspectRatio)
+    fun setAspectRatio(value: Float) {
+        val drawable = drawable
+        if (drawable == null) {
+            targetAspectRatio = targetAspectRatio
+            return
         }
+
+        targetAspectRatio = if (value == SOURCE_IMAGE_ASPECT_RATIO) {
+            drawable.intrinsicWidth / drawable.intrinsicHeight.toFloat()
+        } else {
+            value
+        }
+
+        cropBoundsChangeListener?.onCropAspectRatioChanged(targetAspectRatio)
+    }
+
 
     /**
      * This method checks whether current image fills the crop bounds.
@@ -115,7 +118,7 @@ open class CropImageView @JvmOverloads constructor(context: Context,
      * @param cropRect - new crop rectangle
      */
     fun setCropRect(cropRect: RectF) {
-//        targetAspectRatio = cropRect.width() / cropRect.height() todo set without setter
+        targetAspectRatio = cropRect.width() / cropRect.height()
         this.cropRect.set(cropRect.left - paddingLeft, cropRect.top - paddingTop,
                 cropRect.right - paddingRight, cropRect.bottom - paddingBottom)
         calculateImageScaleBounds()

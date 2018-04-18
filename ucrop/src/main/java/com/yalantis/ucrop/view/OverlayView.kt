@@ -46,8 +46,8 @@ class OverlayView @JvmOverloads constructor(context: Context,
     private var cropGridColumnCount: Int = 0
     private var targetAspectRatio: Float = 0f
     private var gridPoints: FloatArray? = null
-    private var isShowCropFrame: Boolean = false
-    private var isShowCropGrid: Boolean = false
+    private var isShowCropFrame: Boolean = true
+    private var isShowCropGrid: Boolean = true
     private var circleDimmedLayer: Boolean = false
     private var dimmedColor: Int = 0
     private val circularPath = Path()

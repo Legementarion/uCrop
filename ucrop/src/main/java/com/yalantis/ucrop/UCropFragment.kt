@@ -230,9 +230,9 @@ class UCropFragment : Fragment() {
 
         for (cropAspectRatioView in mCropAspectRatioViews) {
             cropAspectRatioView.setOnClickListener { v ->
-                mGestureCropImageView?.targetAspectRatio = ((v as ViewGroup).getChildAt(0) as AspectRatioTextView).getAspectRatio(v.isSelected())
+                mGestureCropImageView?.setAspectRatio(((v as ViewGroup).getChildAt(0) as AspectRatioTextView).getAspectRatio(v.isSelected))
                 mGestureCropImageView?.setImageToWrapCropBounds()
-                if (!v.isSelected()) {
+                if (!v.isSelected) {
                     for (aspectRatioView in mCropAspectRatioViews) {
                         aspectRatioView.isSelected = aspectRatioView === v
                     }

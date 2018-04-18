@@ -25,6 +25,9 @@ import com.yalantis.ucrop.callback.OverlayViewChangeListener
 import com.yalantis.ucrop.model.AspectRatio
 import com.yalantis.ucrop.model.FreestyleMode
 import kotlinx.android.synthetic.main.ucrop_view.view.*
+import android.graphics.drawable.Drawable
+
+
 
 class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
                                           defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
@@ -109,7 +112,7 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     fun resetCropImageView() {
         removeView(gestureCropImageView)
         gestureCropImageView.invalidate()
-//        gestureCropImageView = GestureCropImageView(context)
+        gestureCropImageView.refreshDrawableState()
         setListenersToViews()
         overlayView?.cropViewRect?.let { gestureCropImageView?.setCropRect(it) }
         addView(gestureCropImageView, 0)
@@ -167,11 +170,11 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         val aspectRatioList = options.getParcelableArrayList<AspectRatio>(UCrop.Options.EXTRA_ASPECT_RATIO_OPTIONS)
 
         if (aspectRatioX > 0 && aspectRatioY > 0) {
-            gestureCropImageView?.targetAspectRatio = aspectRatioX / aspectRatioY
+            gestureCropImageView?.setAspectRatio(aspectRatioX / aspectRatioY)
         } else if (aspectRatioList != null && aspectRationSelectedByDefault < aspectRatioList.size) {
-            gestureCropImageView?.targetAspectRatio = aspectRatioList[aspectRationSelectedByDefault].aspectRatioX / aspectRatioList[aspectRationSelectedByDefault].aspectRatioY
+            gestureCropImageView?.setAspectRatio(aspectRatioList[aspectRationSelectedByDefault].aspectRatioX / aspectRatioList[aspectRationSelectedByDefault].aspectRatioY)
         } else {
-            gestureCropImageView?.targetAspectRatio = CropImageView.SOURCE_IMAGE_ASPECT_RATIO
+            gestureCropImageView?.setAspectRatio(CropImageView.SOURCE_IMAGE_ASPECT_RATIO)
         }
 
         // Result bitmap max size options
@@ -193,11 +196,11 @@ class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         val aspectRatioList = mutableListOf<AspectRatio>()
 
         if (aspectRatioX > 0 && aspectRatioY > 0) {
-            gestureCropImageView?.targetAspectRatio = aspectRatioX / aspectRatioY
+            gestureCropImageView?.setAspectRatio(aspectRatioX / aspectRatioY)
         } else if (!aspectRatioList.isEmpty() && aspectRationSelectedByDefault < aspectRatioList.size) {
-            gestureCropImageView?.targetAspectRatio = aspectRatioList[aspectRationSelectedByDefault].aspectRatioX / aspectRatioList[aspectRationSelectedByDefault].aspectRatioY
+            gestureCropImageView?.setAspectRatio(aspectRatioList[aspectRationSelectedByDefault].aspectRatioX / aspectRatioList[aspectRationSelectedByDefault].aspectRatioY)
         } else {
-            gestureCropImageView?.targetAspectRatio = CropImageView.SOURCE_IMAGE_ASPECT_RATIO
+            gestureCropImageView?.setAspectRatio(CropImageView.SOURCE_IMAGE_ASPECT_RATIO)
         }
 
         if (maxSizeX > 0 && maxSizeY > 0) {

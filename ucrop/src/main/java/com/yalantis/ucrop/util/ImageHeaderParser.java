@@ -50,7 +50,7 @@ public class ImageHeaderParser {
      * no exif segment containing orientation data existed, or because of an I/O error attempting to
      * read the exif segment.
      */
-    public static final int UNKNOWN_ORIENTATION = -1;
+    private static final int UNKNOWN_ORIENTATION = -1;
 
     private static final int EXIF_MAGIC_NUMBER = 0xFFD8;
     // "MM".
@@ -286,25 +286,25 @@ public class ImageHeaderParser {
     private static class RandomAccessReader {
         private final ByteBuffer data;
 
-        public RandomAccessReader(byte[] data, int length) {
+        RandomAccessReader(byte[] data, int length) {
             this.data = (ByteBuffer) ByteBuffer.wrap(data)
                     .order(ByteOrder.BIG_ENDIAN)
                     .limit(length);
         }
 
-        public void order(ByteOrder byteOrder) {
+         void order(ByteOrder byteOrder) {
             this.data.order(byteOrder);
         }
 
-        public int length() {
+         int length() {
             return data.remaining();
         }
 
-        public int getInt32(int offset) {
+         int getInt32(int offset) {
             return data.getInt(offset);
         }
 
-        public short getInt16(int offset) {
+         short getInt16(int offset) {
             return data.getShort(offset);
         }
     }
@@ -323,7 +323,7 @@ public class ImageHeaderParser {
         private final InputStream is;
 
         // Motorola / big endian byte order.
-        public StreamReader(InputStream is) {
+        StreamReader(InputStream is) {
             this.is = is;
         }
 

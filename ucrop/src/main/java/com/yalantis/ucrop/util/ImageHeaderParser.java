@@ -377,7 +377,7 @@ public class ImageHeaderParser {
 
     public static void copyExif(ExifInterface originalExif, int width, int height, String imageOutputPath) {
         String[] attributes = new String[]{
-                ExifInterface.TAG_APERTURE_VALUE,
+                ExifInterface.TAG_F_NUMBER,
                 ExifInterface.TAG_DATETIME,
                 ExifInterface.TAG_DATETIME_DIGITIZED,
                 ExifInterface.TAG_EXPOSURE_TIME,
@@ -392,7 +392,7 @@ public class ImageHeaderParser {
                 ExifInterface.TAG_GPS_LONGITUDE_REF,
                 ExifInterface.TAG_GPS_PROCESSING_METHOD,
                 ExifInterface.TAG_GPS_TIMESTAMP,
-                ExifInterface.TAG_RW2_ISO,
+                ExifInterface.TAG_PHOTOGRAPHIC_SENSITIVITY,
                 ExifInterface.TAG_MAKE,
                 ExifInterface.TAG_MODEL,
                 ExifInterface.TAG_SUBSEC_TIME,

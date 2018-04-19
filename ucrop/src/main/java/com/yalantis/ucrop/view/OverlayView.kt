@@ -45,7 +45,7 @@ class OverlayView @JvmOverloads constructor(context: Context,
     private var cropGridRowCount: Int = 0
     private var cropGridColumnCount: Int = 0
     private var targetAspectRatio: Float = 0f
-    private var gridPoints: FloatArray? = null
+    private var gridPoints: FloatArray? = floatArrayOf()
     private var isShowCropFrame: Boolean = true
     private var isShowCropGrid: Boolean = true
     private var circleDimmedLayer: Boolean = false
@@ -412,11 +412,10 @@ class OverlayView @JvmOverloads constructor(context: Context,
      */
     private fun drawCropGrid(canvas: Canvas) {
         if (isShowCropGrid) {
-            gridPoints?.let {
-                if (!cropViewRect.isEmpty) {
+            if (!cropViewRect.isEmpty) {
+                gridPoints = FloatArray(cropGridRowCount * 4 + cropGridColumnCount * 4)
 
-                    gridPoints = FloatArray(cropGridRowCount * 4 + cropGridColumnCount * 4)
-
+                gridPoints?.let {
                     var index = 0
                     for (i in 0 until cropGridRowCount) {
                         it[index++] = cropViewRect.left
@@ -432,8 +431,7 @@ class OverlayView @JvmOverloads constructor(context: Context,
                         it[index++] = cropViewRect.bottom
                     }
                 }
-
-                canvas.drawLines(it, cropGridPaint)
+                canvas.drawLines(gridPoints, cropGridPaint)
             }
         }
 

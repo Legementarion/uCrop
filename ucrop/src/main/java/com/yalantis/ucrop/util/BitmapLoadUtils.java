@@ -25,14 +25,6 @@ public class BitmapLoadUtils {
 
     private static final String TAG = "BitmapLoadUtils";
 
-    public static void decodeBitmapInBackground(@NonNull Context context,
-                                                @NonNull Uri uri, @Nullable Uri outputUri,
-                                                int requiredWidth, int requiredHeight,
-                                                BitmapLoadCallback loadCallback) {
-
-        new BitmapLoadTask(context, uri, outputUri, requiredWidth, requiredHeight, loadCallback).execute();
-    }
-
     public static Bitmap transformBitmap(@NonNull Bitmap bitmap, @NonNull Matrix transformMatrix) {
         try {
             Bitmap converted = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), transformMatrix, true);

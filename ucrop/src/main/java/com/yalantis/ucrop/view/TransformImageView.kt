@@ -13,6 +13,7 @@ import android.widget.ImageView
 
 import com.yalantis.ucrop.callback.BitmapLoadCallback
 import com.yalantis.ucrop.model.ExifInfo
+import com.yalantis.ucrop.task.LoadTask
 import com.yalantis.ucrop.util.BitmapLoadUtils
 import com.yalantis.ucrop.util.FastBitmapDrawable
 import com.yalantis.ucrop.util.getCenterFromRect
@@ -132,7 +133,7 @@ open class TransformImageView @JvmOverloads constructor(context: Context,
     fun setImageUri(imageUri: Uri, outputUri: Uri?) {
         val maxBitmapSize = maxBitmapSize
 
-        BitmapLoadUtils.decodeBitmapInBackground(context, imageUri, outputUri, maxBitmapSize, maxBitmapSize,
+        LoadTask(context, imageUri, outputUri, maxBitmapSize, maxBitmapSize,
                 object : BitmapLoadCallback {
 
                     override fun onBitmapLoaded(bitmap: Bitmap, exifInfo: ExifInfo, imageInputPath: String, imageOutputPath: String?) {
@@ -148,7 +149,7 @@ open class TransformImageView @JvmOverloads constructor(context: Context,
                         Log.e(TAG, "onFailure: setImageUri", bitmapWorkerException)
                         transformImageListener?.onLoadFailure(bitmapWorkerException)
                     }
-                })
+                }).loadImage()
     }
 
     /**

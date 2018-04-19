@@ -25,9 +25,6 @@ import com.yalantis.ucrop.callback.OverlayViewChangeListener
 import com.yalantis.ucrop.model.AspectRatio
 import com.yalantis.ucrop.model.FreestyleMode
 import kotlinx.android.synthetic.main.ucrop_view.view.*
-import android.graphics.drawable.Drawable
-
-
 
 class UCropView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
                                           defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {

@@ -12,7 +12,7 @@ import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.callback.CropBoundsChangeListener
 import com.yalantis.ucrop.model.CropParameters
 import com.yalantis.ucrop.model.ImageState
-import com.yalantis.ucrop.task.BitmapCropTask
+import com.yalantis.ucrop.task.CropTask
 import com.yalantis.ucrop.util.CubicEasing
 import com.yalantis.ucrop.util.getCornersFromRect
 import com.yalantis.ucrop.util.getRectSidesFromCorners
@@ -92,10 +92,10 @@ open class CropImageView @JvmOverloads constructor(context: Context,
 
     /**
      * Cancels all current animations and sets image to fill crop area (without animation).
-     * Then creates and executes [BitmapCropTask] with proper parameters.
+     * Then creates and executes [CropTask] with proper parameters.
      */
     fun cropAndSaveImage(compressFormat: Bitmap.CompressFormat, compressQuality: Int,
-                         cropCallback: BitmapCropCallback?) {
+                         cropCallback: BitmapCropCallback) {
         cancelAllAnimations()
         setImageToWrapCropBounds(false)
 
@@ -108,7 +108,7 @@ open class CropImageView @JvmOverloads constructor(context: Context,
                 compressFormat, compressQuality,
                 inputPath!!, outputPath!!, currentExifInfo!!)
 
-        BitmapCropTask(context, viewBitmap, imageState, cropParameters, cropCallback).execute()
+        viewBitmap?.let { CropTask(context, it, imageState, cropParameters, cropCallback).cropThemAll() }
     }
 
     /**
